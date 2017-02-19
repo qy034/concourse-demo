@@ -1,0 +1,5 @@
+---
+applications:
+- name: concourse-demo-restful
+  memory: 1G
+  buildpack: java_buildpack_offline
