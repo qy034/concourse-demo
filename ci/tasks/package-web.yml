@@ -3,8 +3,7 @@ platform: linux
 image_resource:
   type: docker-image
   source:
-    repository: patrickcrocker/maven-resource
-    tag: latest
+    repository: springboot/ci-base-8-jdk
 
 inputs:
 - name: source-code
