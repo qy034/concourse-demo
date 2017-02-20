@@ -16,38 +16,42 @@ resources:
     skip_cert_check: true
 
 jobs:
-- name: package-web
+- name: unit-test-web
   public: true
   plan:
   - get: source-code
     trigger: true
-  - task: package
-    file: source-code/ci/tasks/package-web.yml
+  - task: unit-test
+    file: source-code/ci/tasks/unit-test-web.yml
 - name: deploy-web
   public: true
   plan:
   - get: source-code
     trigger: true
     passed:
-      - package-web
+      - unit-test-web
+  - task: package
+    file: source-code/ci/tasks/package-web.yml
   - put: cloudfoundry
     params:
       manifest: source-code/concourse-demo-web/manifest/concourse-demo-web-manifest.yml
       path: target-web/concourse-demo-web.jar
-- name: package-restful
+- name: unit-test-restful
   public: true
   plan:
   - get: source-code
     trigger: true
-  - task: package
-    file: source-code/ci/tasks/package-restful.yml
+  - task: unit-test
+    file: source-code/ci/tasks/unit-test-restful.yml
 - name: deploy-restful
   public: true
   plan:
   - get: source-code
     trigger: true
     passed:
-      - package-restful
+      - unit-test-restful
+  - task: package
+    file: source-code/ci/tasks/package-restful.yml
   - put: cloudfoundry
     params:
       manifest: source-code/concourse-demo-restful/manifest/concourse-demo-restful-manifest.yml
