@@ -1,0 +1,54 @@
+---
+resources:
+- name: source-code
+  type: git
+  source:
+    branch: master
+    uri: https://github.com/liangboyi/concourse-demo
+- name: cloudfoundry
+  type: cf
+  source:
+    api: {{cf-api}}
+    username: {{cf-username}}
+    password: {{cf-password}}
+    organization: {{cf-organization}}
+    space: {{cf-space}}
+    skip_cert_check: true
+
+jobs:
+- name: package-web
+  public: true
+  plan:
+  - get: source-code
+    trigger: true
+  - task: package
+    file: source-code/ci/tasks/package-web.yml
+- name: deploy-web
+  public: true
+  plan:
+  - get: source-code
+    trigger: true
+    passed:
+      - package-web
+  - put: cloudfoundry
+    params:
+      manifest: source-code/concourse-demo-web/manifest/concourse-demo-web-manifest.yml
+      path: target-web/concourse-demo-web.jar
+- name: package-restful
+  public: true
+  plan:
+  - get: source-code
+    trigger: true
+  - task: package
+    file: source-code/ci/tasks/package-restful.yml
+- name: deploy-restful
+  public: true
+  plan:
+  - get: source-code
+    trigger: true
+    passed:
+      - package-restful
+  - put: cloudfoundry
+    params:
+      manifest: source-code/concourse-demo-restful/manifest/concourse-demo-restful-manifest.yml
+      path: target-web/concourse-demo-restful.jar
