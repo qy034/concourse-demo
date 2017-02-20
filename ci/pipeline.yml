@@ -51,4 +51,4 @@ jobs:
   - put: cloudfoundry
     params:
       manifest: source-code/concourse-demo-restful/manifest/concourse-demo-restful-manifest.yml
-      path: target-web/concourse-demo-restful.jar
+      path: target-restful/concourse-demo-restful.jar
